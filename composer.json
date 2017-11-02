@@ -1,0 +1,28 @@
+{
+	"name" : "barogla/csrf",
+	"description" : "Csrf Component - Zoe",
+	"type" : "library",
+	"authors" : [{
+			"name" : "CurtisBarogla",
+			"email" : "curtis_barogla@outlook.fr",
+			"role" : "T.B."
+		}
+	],
+	"license" : "WTFPL",
+	"autoload" : {
+		"psr-4" : {
+			"Zoe\\Component\\Csrf\\" : "src",
+			"ZoeTest\\Component\\Csrf\\" : "tests"
+		}
+	},
+	"keywords" : [
+		"csrf"
+	],
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "2.0-dev"
+		}
+	},
+	"homepage" : "https://github.com/CurtisBarogla/Csrf",
+	"minimum-stability" : "stable"
+}
