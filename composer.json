@@ -18,6 +18,9 @@
 	"keywords" : [
 		"csrf"
 	],
+	"require" : {
+		"php" : ">= 7.1"
+	},
 	"extra" : {
 		"branch-alias" : {
 			"dev-master" : "2.0-dev"
