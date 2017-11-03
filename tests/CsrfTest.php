@@ -168,9 +168,8 @@ class CsrfTest extends TestCase
      */
     public function testExceptionOnInvalidPreProcess(): void
     {
-        $name = CsrfStrategyInterface::PRE_VALIDATION_PROCESS;
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Processor '{$name}' MUST be a callable., 'string' given");
+        $this->expectExceptionMessage("Processor 'PRE_VALIDATION_PROCESS' MUST be a callable., 'string' given");
         
         $csrf = $this->doGetCsrfForValidate("foo", "foo", null);
         
@@ -182,9 +181,8 @@ class CsrfTest extends TestCase
      */
     public function testExceptionOnInvalidPostProcess(): void
     {
-        $name = CsrfStrategyInterface::POST_VALIDATION_PROCESS;
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Processor '{$name}' MUST be a callable., 'string' given");
+        $this->expectExceptionMessage("Processor 'POST_VALIDATION_PROCESS' MUST be a callable., 'string' given");
         
         $csrf = $this->doGetCsrfForValidate("foo", null, "foo");
         
@@ -196,9 +194,8 @@ class CsrfTest extends TestCase
      */
     public function testExceptionOnInvalidReturnTypePreProcess(): void
     {
-        $name = CsrfStrategyInterface::PRE_VALIDATION_PROCESS;
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Callable for processor '{$name}' MUST return 'void' or null. 'string' returned");
+        $this->expectExceptionMessage("Callable for processor 'PRE_VALIDATION_PROCESS' MUST return 'void' or null. 'string' returned");
         
         $csrf = $this->doGetCsrfForValidate("foo", function(CsrfToken $token, CsrfInterface $csrf): string {
             return "foo";
@@ -212,9 +209,8 @@ class CsrfTest extends TestCase
      */
     public function testExceptionOnInvalidReturnTypePostProcess(): void
     {
-        $name = CsrfStrategyInterface::POST_VALIDATION_PROCESS;
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Callable for processor '{$name}' MUST return 'void' or null. 'string' returned");
+        $this->expectExceptionMessage("Callable for processor 'POST_VALIDATION_PROCESS' MUST return 'void' or null. 'string' returned");
         
         $csrf = $this->doGetCsrfForValidate("foo", null, function(CsrfToken $token, CsrfInterface $csrf): string {
             return "foo";

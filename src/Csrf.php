@@ -49,7 +49,7 @@ class Csrf implements CsrfInterface
     private $stategy;
     
     /**
-     * Identifer to store a csrf token
+     * Identifier to store a csrf token
      * 
      * @var string
      */
@@ -139,11 +139,11 @@ class Csrf implements CsrfInterface
         if(isset($processors[$processor]) && null !== $callable = $processors[$processor]) {
             if(!\is_callable($callable))
                 throw new LogicException(\sprintf("Processor '%s' MUST be a callable., '%s' given",
-                    $processor,
+                    ($processor === CsrfStrategyInterface::PRE_VALIDATION_PROCESS) ? "PRE_VALIDATION_PROCESS" : "POST_VALIDATION_PROCESS",
                     $getName($callable)));
             if(null !== $returned = \call_user_func($callable, $token, $this)) {
                 throw new LogicException(\sprintf("Callable for processor '%s' MUST return 'void' or null. '%s' returned",
-                    $processor,
+                    ($processor === CsrfStrategyInterface::PRE_VALIDATION_PROCESS) ? "PRE_VALIDATION_PROCESS" : "POST_VALIDATION_PROCESS",
                     $getName($returned)));
             }
         }
