@@ -13,7 +13,7 @@ declare(strict_types = 1);
 namespace Zoe\Component\Csrf;
 
 use Zoe\Component\Csrf\Exception\InvalidCsrfTokenException;
-use Zoe\Component\Csrf\Storage\CsrfTokenStorageInterface;
+
 
 /**
  * Handle validation of Csrf token
@@ -37,7 +37,7 @@ interface CsrfInterface
      * Refresh a stored Csrf token
      * 
      * @throws InvalidCsrfTokenException
-     *   If no Csrf token has been founded into the store
+     *   If no Csrf token has been found into the store
      */
     public function refresh(): void;
 
@@ -51,13 +51,5 @@ interface CsrfInterface
      *   When the given token is invalid or no token is found
      */
     public function validate(CsrfToken $token): void;
-    
-    /**
-     * Get the registered storage
-     * 
-     * @return CsrfTokenStorageInterface
-     *   Csrf token storage
-     */
-    public function getStorage(): CsrfTokenStorageInterface;
     
 }
