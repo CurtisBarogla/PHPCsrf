@@ -59,10 +59,10 @@ class CsrfToken
     }
     
     /**
-     * Get the timestamp creation
+     * Timestamp which the token has been created
      * 
      * @return int
-     *   Timestamp creation
+     *   Timestamp
      */
     public function getTimestamp(): int
     {
