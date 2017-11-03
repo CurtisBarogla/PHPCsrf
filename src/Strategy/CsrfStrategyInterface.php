@@ -24,20 +24,20 @@ interface CsrfStrategyInterface
     /**
      * Process executed before the validation of the csrf token
      * 
-     * @var string
+     * @var int
      */
-    public const PRE_VALIDATION_PROCESS = "pre_validation";
+    public const PRE_VALIDATION_PROCESS = 0;
     
     /**
      * Process executed after the validation of the csrf token
      * 
-     * @var string
+     * @var int
      */
-    public const POST_VALIDATION_PROCESS = "post_validation";
+    public const POST_VALIDATION_PROCESS = 1;
     
     /**
-     * Process a strategy over the token csrf post validation
-     * Each can be setted to a callable or null or skipped
+     * Process a strategy over the token csrf pre and/or post validation
+     * Each can be setted to a callable or null to be skipped
      * Callable take as parameters the current stored csrf token and the csrf instance
      *  
      * @return callable[]|null
