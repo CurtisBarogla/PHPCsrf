@@ -56,13 +56,11 @@ class RandomBytesTokenGenerator implements TokenGeneratorInterface
      */
     public function generate(): string
     {
-        return \rtrim(
-                    \base64_encode(
-                        \bin2hex(
-                            \random_bytes($this->length)
-                        )
-                    ), 
-                "=");
+        return \base64_encode(
+                    \bin2hex(
+                        \random_bytes($this->length)
+                    )
+                );
     }
     
 }

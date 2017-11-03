@@ -54,7 +54,7 @@ class RandomBytesTokenGeneratorTest extends TestCase
             $same = $stored === $generator->generate();
             if($same)
                 break;
-            $regexOk = 1 === \preg_match("#^[A-Za-z0-9]+$#", $generator->generate());
+            $regexOk = 1 === \preg_match("#^[A-Za-z0-9=]+$#", $generator->generate());
             if(!$regexOk)
                 break;
             $stored = null;
