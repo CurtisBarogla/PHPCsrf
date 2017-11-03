@@ -43,7 +43,7 @@ class RandomBytesTokenGeneratorTest extends TestCase
      */
     public function testGenerate(): void
     {
-        $generator = new RandomBytesTokenGenerator(8);
+        $generator = new RandomBytesTokenGenerator(70);
         
         // not really pertinent... but i like it ><
         $stored = null;
@@ -54,12 +54,12 @@ class RandomBytesTokenGeneratorTest extends TestCase
             $same = $stored === $generator->generate();
             if($same)
                 break;
-            $regexOk = 1 === \preg_match("#[A-Za-z0-9]#", $generator->generate());
+            $regexOk = 1 === \preg_match("#^[A-Za-z0-9]+$#", $generator->generate());
             if(!$regexOk)
                 break;
             $stored = null;
         }
-        
+
         $this->assertFalse($same);
         $this->assertTrue($regexOk);
     }

@@ -49,9 +49,9 @@ class NativeSessionStorageTest extends TestCase
         $this->mockNativeSessioAndSetItIntoTheStore($store, $reflection);
         
         $token = new CsrfToken("bar");
-        $this->assertNull($store->add("foo", $token));
         
-        $this->assertNotEmpty($this->getMockedSessionFromStorage($store, $reflection));
+        $this->assertNull($store->add("foo", $token));
+        $this->assertCount(1, $this->getMockedSessionFromStorage($store, $reflection));
     }
     
     /**
