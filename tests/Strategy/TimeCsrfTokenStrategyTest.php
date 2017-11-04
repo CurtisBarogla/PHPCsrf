@@ -60,9 +60,10 @@ class TimeCsrfTokenStrategyTest extends TestCase
     {
         $strategy = new TimeCsrfTokenStrategy(10);
         $mockedCsrf = $this->getMockBuilder(Csrf::class)->disableOriginalConstructor()->setMethods(["refresh"])->getMock();
-        $mockedCsrf->expects($this->never())->method("refresh")->will($this->returnValue(null));
+        $mockedCsrf->expects($this->once())->method("refresh")->will($this->returnValue(null));
         $token = new CsrfToken("foo");
         \call_user_func($strategy->process()[CsrfStrategyInterface::PRE_VALIDATION_PROCESS], $token, $mockedCsrf);
+        \call_user_func($strategy->process()[CsrfStrategyInterface::POST_VALIDATION_PROCESS], $token, $mockedCsrf);
     }
     
 }
