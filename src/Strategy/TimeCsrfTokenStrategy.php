@@ -17,6 +17,7 @@ use Zoe\Component\Csrf\CsrfInterface;
 
 /**
  * Set an expiration time for a stored csrf token
+ * Each time a csrf token is consumed, a new one is setted
  * 
  * @author CurtisBarogla <curtis_barogla@outlook.fr>
  *
@@ -53,6 +54,10 @@ class TimeCsrfTokenStrategy implements CsrfStrategyInterface
                 if($token->getTimestamp() + $this->time <= \time()) {
                     $csrf->refresh();
                 }
+            },
+            
+            CsrfStrategyInterface::POST_VALIDATION_PROCESS  =>  function(CsrfToken $token, CsrfInterface $csrf): void {
+                $csrf->refresh();
             }
         ];
     }
