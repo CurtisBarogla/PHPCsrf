@@ -108,7 +108,7 @@ class Csrf implements CsrfInterface
         $this->executeProcess($this->storage->get(self::CSRF_IDENTIFER), $processors, CsrfStrategyInterface::PRE_VALIDATION_PROCESS);
         
         $postPreProcessToken = $this->storage->get(self::CSRF_IDENTIFER);
-        if($postPreProcessToken->get() !== $token->get())
+        if(!\hash_equals($postPreProcessToken->get(), $token->get()))
             throw new InvalidCsrfTokenException("Invalid csrf token");
         
         $this->executeProcess($postPreProcessToken, $processors, CsrfStrategyInterface::POST_VALIDATION_PROCESS);
