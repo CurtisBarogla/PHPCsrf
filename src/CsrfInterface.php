@@ -25,6 +25,13 @@ interface CsrfInterface
 {
     
     /**
+     * Identifier to store a csrf token
+     *
+     * @var string
+     */
+    public const CSRF_IDENTIFER = "CSRF-TOKEN";
+    
+    /**
      * Generate and store a csrf token.
      * Returned token must be a stored one or a new generated one if none has been already stored
      * 

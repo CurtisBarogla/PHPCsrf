@@ -34,14 +34,6 @@ class CsrfTest extends TestCase
 {
     
     /**
-     * Csrf token identifier
-     * MUST be same as the declared one into the tested class
-     * 
-     * @var string
-     */
-    private const CSRF_IDENTIFER = "CSRF-TOKEN";
-    
-    /**
      * @see \Zoe\Component\Csrf\Csrf
      */
     public function testInterface(): void
@@ -58,7 +50,7 @@ class CsrfTest extends TestCase
     {
         $token = new CsrfToken("foo");
         $storage = $this->getMockedCsrfTokenStorage();
-        $storage->method("get")->with(self::CSRF_IDENTIFER)->will($this->returnValue($token));
+        $storage->method("get")->with(CsrfInterface::CSRF_IDENTIFER)->will($this->returnValue($token));
         
         $csrf = new Csrf($storage, $this->getMockedTokenGenerator(), $this->getMockedCsrfStrategy());
         
@@ -74,8 +66,8 @@ class CsrfTest extends TestCase
         $exception = new InvalidCsrfTokenException();
         $storage = $this->getMockedCsrfTokenStorage();
         $generator = $this->getMockedTokenGenerator("foo");
-        $storage->method("get")->with(self::CSRF_IDENTIFER)->will($this->throwException($exception));
-        $storage->method("add")->with(self::CSRF_IDENTIFER, $token)->will($this->returnValue(null));
+        $storage->method("get")->with(CsrfInterface::CSRF_IDENTIFER)->will($this->throwException($exception));
+        $storage->method("add")->with(CsrfInterface::CSRF_IDENTIFER, $token)->will($this->returnValue(null));
         
         $csrf = new Csrf($storage, $generator, $this->getMockedCsrfStrategy());
         
@@ -90,8 +82,8 @@ class CsrfTest extends TestCase
     {
         $storage = $this->getMockedCsrfTokenStorage();
         $generator = $this->getMockedTokenGenerator("foo");
-        $storage->method("delete")->with(self::CSRF_IDENTIFER)->will($this->returnValue(null));
-        $storage->method("add")->with(self::CSRF_IDENTIFER, new CsrfToken("foo"))->will($this->returnValue(null));
+        $storage->method("delete")->with(CsrfInterface::CSRF_IDENTIFER)->will($this->returnValue(null));
+        $storage->method("add")->with(CsrfInterface::CSRF_IDENTIFER, new CsrfToken("foo"))->will($this->returnValue(null));
         
         $csrf = new Csrf($storage, $generator, $this->getMockedCsrfStrategy());
         
@@ -129,7 +121,7 @@ class CsrfTest extends TestCase
             ];
         }
         $strategy->method("process")->will($this->returnValue($returnValue));
-        $storage->method("get")->with(self::CSRF_IDENTIFER)->will($this->returnValue($token));
+        $storage->method("get")->with(CsrfInterface::CSRF_IDENTIFER)->will($this->returnValue($token));
         
         $csrf = new Csrf($storage, $generator, $strategy);
         

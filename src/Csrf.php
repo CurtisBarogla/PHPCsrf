@@ -49,13 +49,6 @@ class Csrf implements CsrfInterface
     private $stategy;
     
     /**
-     * Identifier to store a csrf token
-     * 
-     * @var string
-     */
-    private const CSRF_IDENTIFER = "CSRF-TOKEN";
-    
-    /**
      * Initialize csrf 
      * 
      * @param CsrfTokenStorageInterface $storage
