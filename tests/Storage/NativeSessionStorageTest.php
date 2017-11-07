@@ -17,6 +17,7 @@ use Zoe\Component\Csrf\Storage\NativeSessionStorage;
 use Zoe\Component\Csrf\Storage\CsrfTokenStorageInterface;
 use Zoe\Component\Csrf\CsrfToken;
 use Zoe\Component\Csrf\Exception\InvalidCsrfTokenException;
+use Zoe\Component\Internal\ReflectionTrait;
 
 /**
  * NativeSessionStorage testcase
@@ -28,6 +29,8 @@ use Zoe\Component\Csrf\Exception\InvalidCsrfTokenException;
  */
 class NativeSessionStorageTest extends TestCase
 {
+    
+    use ReflectionTrait;
     
     /**
      * @see \Zoe\Component\Csrf\Storage\NativeSessionStorage
@@ -46,12 +49,12 @@ class NativeSessionStorageTest extends TestCase
     {
         $store = new NativeSessionStorage();
         $reflection = new \ReflectionClass($store);
-        $this->mockNativeSessioAndSetItIntoTheStore($store, $reflection);
+        $this->reflection_injectNewValueIntoProperty($store, $reflection, "session", []);
         
         $token = new CsrfToken("bar");
         
         $this->assertNull($store->add("foo", $token));
-        $this->assertCount(1, $this->getMockedSessionFromStorage($store, $reflection));
+        $this->assertCount(1, $this->reflection_getPropertyValue($store, $reflection, "session"));
     }
     
     /**
@@ -61,7 +64,7 @@ class NativeSessionStorageTest extends TestCase
     {
         $store = new NativeSessionStorage();
         $reflection = new \ReflectionClass($store);
-        $this->mockNativeSessioAndSetItIntoTheStore($store, $reflection);
+        $this->reflection_injectNewValueIntoProperty($store, $reflection, "session", []);
         
         $token = new CsrfToken("bar");
         $store->add("foo", $token);
@@ -76,13 +79,13 @@ class NativeSessionStorageTest extends TestCase
     {
         $store = new NativeSessionStorage();
         $reflection = new \ReflectionClass($store);
-        $this->mockNativeSessioAndSetItIntoTheStore($store, $reflection);
+        $this->reflection_injectNewValueIntoProperty($store, $reflection, "session", []);
         
         $token = new CsrfToken("bar");
         $store->add("foo", $token);
         
         $this->assertNull($store->delete("foo"));
-        $this->assertEmpty($this->getMockedSessionFromStorage($store, $reflection));
+        $this->assertEmpty($this->reflection_getPropertyValue($store, $reflection, "session"));
     }
     
                     /**_____EXCEPTION_____**/
@@ -109,42 +112,6 @@ class NativeSessionStorageTest extends TestCase
         
         $store = new NativeSessionStorage();
         $store->delete("foo");
-    }
-    
-    
-    /**
-     * Use a simple array as session and set it into the session property of the store
-     * 
-     * @param NativeSessionStorage $store
-     *   Store instance
-     * @param \ReflectionClass $reflection
-     *   Reflection with store setted
-     */
-    private function mockNativeSessioAndSetItIntoTheStore(NativeSessionStorage $store, \ReflectionClass $reflection): void
-    {
-        $session = [];
-        $property = $reflection->getProperty("session");
-        $property->setAccessible(true);
-        $property->setValue($store, $session);
-    }
-    
-    /**
-     * Get the mocked session setted by the reflectivity
-     * 
-     * @param NativeSessionStorage $store
-     *   Store instance
-     * @param \ReflectionClass $reflection
-     *   Reflection with store setted
-     * 
-     * @return array
-     *   Mocked session array property value
-     */
-    private function getMockedSessionFromStorage(NativeSessionStorage $store, \ReflectionClass $reflection): array
-    {
-        $property = $reflection->getProperty("session");
-        $property->setAccessible(true);
-        
-        return $property->getValue($store);
     }
     
 }
