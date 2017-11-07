@@ -30,5 +30,8 @@
 		}
 	},
 	"homepage" : "https://github.com/CurtisBarogla/Csrf",
-	"minimum-stability" : "stable"
+	"minimum-stability" : "stable",
+	"require-dev" : {
+		"barogla/internal" : "dev-master"
+	}
 }
