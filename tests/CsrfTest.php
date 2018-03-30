@@ -13,14 +13,13 @@ declare(strict_types = 1);
 namespace ZoeTest\Component\Csrf;
 
 use PHPUnit\Framework\TestCase;
-use Zoe\Component\Csrf\Generator\TokenGeneratorInterface;
-use Zoe\Component\Csrf\Storage\CsrfTokenStorageInterface;
-use Zoe\Component\Csrf\Strategy\CsrfStrategyInterface;
 use Zoe\Component\Csrf\Csrf;
 use Zoe\Component\Csrf\CsrfInterface;
 use Zoe\Component\Csrf\CsrfToken;
 use Zoe\Component\Csrf\Exception\InvalidCsrfTokenException;
-use Zoe\Component\Csrf\Exception\LogicException;
+use Zoe\Component\Csrf\Generator\TokenGeneratorInterface;
+use Zoe\Component\Csrf\Storage\CsrfTokenStorageInterface;
+use Zoe\Component\Csrf\Strategy\CsrfStrategyInterface;
 
 /**
  * Csrf testcase
@@ -133,8 +132,13 @@ class CsrfTest extends TestCase
      */
     public function testValidateOnValidToken(): void
     {   
+        $this->expectOutputString("PreProcess called - PostProcess called");
         $compareToken = new CsrfToken("foo");
-        $csrf = $this->doGetCsrfForValidate("foo");
+        $csrf = $this->doGetCsrfForValidate("foo", function(CsrfToken $token, Csrf $csrf) {
+            echo "PreProcess called - ";
+        }, function(CsrfToken $token, Csrf $csrf) {
+            echo "PostProcess called";
+        });
         
         $this->assertNull($csrf->validate($compareToken));
     }
@@ -151,64 +155,6 @@ class CsrfTest extends TestCase
         $csrf = $this->doGetCsrfForValidate("foo");
         
         $csrf->validate($comparedToken);
-    }
-    
-                    /**_____EXCEPTION_____**/
-    
-    /**
-     * @see \Zoe\Component\Csrf\Csrf::validate()
-     */
-    public function testExceptionOnInvalidPreProcess(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Processor 'PRE_VALIDATION_PROCESS' MUST be a callable., 'string' given");
-        
-        $csrf = $this->doGetCsrfForValidate("foo", "foo", null);
-        
-        $csrf->validate(new CsrfToken("foo"));
-    }
-    
-    /**
-     * @see \Zoe\Component\Csrf\Csrf::validate()
-     */
-    public function testExceptionOnInvalidPostProcess(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Processor 'POST_VALIDATION_PROCESS' MUST be a callable., 'string' given");
-        
-        $csrf = $this->doGetCsrfForValidate("foo", null, "foo");
-        
-        $csrf->validate(new CsrfToken("foo"));
-    }
-    
-    /**
-     * @see \Zoe\Component\Csrf\Csrf::validate()
-     */
-    public function testExceptionOnInvalidReturnTypePreProcess(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Callable for processor 'PRE_VALIDATION_PROCESS' MUST return 'void' or null. 'string' returned");
-        
-        $csrf = $this->doGetCsrfForValidate("foo", function(CsrfToken $token, CsrfInterface $csrf): string {
-            return "foo";
-        }, null);
-        
-        $csrf->validate(new CsrfToken("foo"));
-    }
-    
-    /**
-     * @see \Zoe\Component\Csrf\Csrf::validate()
-     */
-    public function testExceptionOnInvalidReturnTypePostProcess(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Callable for processor 'POST_VALIDATION_PROCESS' MUST return 'void' or null. 'string' returned");
-        
-        $csrf = $this->doGetCsrfForValidate("foo", null, function(CsrfToken $token, CsrfInterface $csrf): string {
-            return "foo";
-        });
-            
-        $csrf->validate(new CsrfToken("foo"));
     }
     
     /**

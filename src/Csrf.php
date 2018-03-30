@@ -125,21 +125,8 @@ class Csrf implements CsrfInterface
         if(null === $processors)
             return;
         
-        $getName = function($arg): string {
-            return (\is_object($arg)) ? \get_class($arg) : \gettype($arg);
-        };
-            
-        if(isset($processors[$processor]) && null !== $callable = $processors[$processor]) {
-            if(!\is_callable($callable))
-                throw new LogicException(\sprintf("Processor '%s' MUST be a callable., '%s' given",
-                    ($processor === CsrfStrategyInterface::PRE_VALIDATION_PROCESS) ? "PRE_VALIDATION_PROCESS" : "POST_VALIDATION_PROCESS",
-                    $getName($callable)));
-            if(null !== $returned = \call_user_func($callable, $token, $this)) {
-                throw new LogicException(\sprintf("Callable for processor '%s' MUST return 'void' or null. '%s' returned",
-                    ($processor === CsrfStrategyInterface::PRE_VALIDATION_PROCESS) ? "PRE_VALIDATION_PROCESS" : "POST_VALIDATION_PROCESS",
-                    $getName($returned)));
-            }
-        }
+        if(isset($processors[$processor]) && null !== $callable = $processors[$processor])
+            \call_user_func($callable, $token, $this);
     }
 
 }
