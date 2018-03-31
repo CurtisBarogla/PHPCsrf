@@ -125,7 +125,7 @@ class Csrf implements CsrfInterface
         if(null === $processors)
             return;
         
-        if(isset($processors[$processor]) && null !== $callable = $processors[$processor])
+        if(isset($processors[$processor]) && \is_callable(($callable = $processors[$processor])))
             \call_user_func($callable, $token, $this);
     }
 
