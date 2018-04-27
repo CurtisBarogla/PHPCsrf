@@ -43,6 +43,20 @@ class CsrfTest extends TestCase
     }
     
     /**
+     * @see \Zoe\Component\Csrf\Csrf::getTokenKey()
+     */
+    public function testGetTokenKey(): void
+    {
+        $csrf = new Csrf($this->getMockedCsrfTokenStorage(), $this->getMockedTokenGenerator(), $this->getMockedCsrfStrategy());
+        
+        $this->assertSame("_csrf", $csrf->getTokenKey());
+        
+        $csrf = new Csrf($this->getMockedCsrfTokenStorage(), $this->getMockedTokenGenerator(), $this->getMockedCsrfStrategy(), "_CSRF");
+        
+        $this->assertSame("_CSRF", $csrf->getTokenKey());
+    }
+    
+    /**
      * @see \Zoe\Component\Csrf\Csrf::generate()
      */
     public function testGenerateWhenStorageHasAToken(): void

@@ -32,6 +32,14 @@ interface CsrfInterface
     public const CSRF_IDENTIFER = "CSRF-TOKEN";
     
     /**
+     * Refer the token generated
+     * 
+     * @return string
+     *   Key for refering the token
+     */
+    public function getTokenKey(): string;
+    
+    /**
      * Generate and store a csrf token.
      * Returned token must be a stored one or a new generated one if none has been already stored
      * 

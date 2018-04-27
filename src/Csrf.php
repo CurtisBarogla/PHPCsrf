@@ -49,6 +49,13 @@ class Csrf implements CsrfInterface
     private $stategy;
     
     /**
+     * Refer to token
+     * 
+     * @var string
+     */
+    private $tokenKey;
+    
+    /**
      * Initialize csrf 
      * 
      * @param CsrfTokenStorageInterface $storage
@@ -58,11 +65,25 @@ class Csrf implements CsrfInterface
      * @param CsrfStrategyInterface $strategy
      *   Validation strategy
      */
-    public function __construct(CsrfTokenStorageInterface $storage, TokenGeneratorInterface $generator, CsrfStrategyInterface $strategy)
+    public function __construct(
+        CsrfTokenStorageInterface $storage, 
+        TokenGeneratorInterface $generator, 
+        CsrfStrategyInterface $strategy,
+        string $tokenKey = "_csrf")
     {
         $this->storage = $storage;
         $this->generator = $generator;
         $this->stategy = $strategy;
+        $this->tokenKey = $tokenKey;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Zoe\Component\Csrf\CsrfInterface::getTokenKey()
+     */
+    public function getTokenKey(): string
+    {
+        return $this->tokenKey;
     }
     
     /**
