@@ -1,5 +1,3 @@
-# Csrf security component
+# CSRF Component
 
-Kinda usable now :)
-
-Csrf component
+Documentation soon <sup>TM</sup>

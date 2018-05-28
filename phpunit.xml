@@ -13,7 +13,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Zoe - Csrf Component Tests">
+        <testsuite name="Ness - Csrf Component Tests">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
