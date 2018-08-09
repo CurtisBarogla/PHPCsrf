@@ -12,18 +12,19 @@
 	"license" : "MIT",
 	"autoload" : {
 		"psr-4" : {
-			"Ness\\Component\\Csrf\\" : "src",
+			"Ness\\Component\\Csrf\\" : "src"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
 			"NessTest\\Component\\Csrf\\" : "tests"
-		},
-		"exclude-from-classmap" : [
-			"tests"
-		]
+		}
 	},
 	"keywords" : [
 		"csrf",
 		"http",
-		"from",
-		"token"
+		"token",
+		"security"
 	],
 	"require" : {
 		"php" : ">= 7.1"
