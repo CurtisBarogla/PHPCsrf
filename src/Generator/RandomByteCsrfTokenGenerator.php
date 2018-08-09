@@ -38,7 +38,7 @@ class RandomByteCsrfTokenGenerator implements CsrfTokenGeneratorInterface
      */
     public function __construct(int $length = 32)
     {
-        $this->length = $length;
+        $this->length = $length >> 1;
     }
     
     /**
@@ -47,9 +47,7 @@ class RandomByteCsrfTokenGenerator implements CsrfTokenGeneratorInterface
      */
     public function generate(): CsrfToken
     {
-        $length = $this->length / 2;
-        
-        return new CsrfToken(\bin2hex(\random_bytes($length)));
+        return new CsrfToken(\bin2hex(\random_bytes($this->length)));
     }
 
 }
