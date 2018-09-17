@@ -105,7 +105,7 @@ class SymfonyApacheUniqueIdCsrfTokenGenerator extends ApacheUniqueIdCsrfTokenGen
 }
 ~~~
 
-##3. Store CSRF token
+## 3. Store CSRF token
 
 A store is responsible to store an already generated csrf token for later usages.
 
@@ -122,14 +122,14 @@ $store->get();
 $store->delete();
 ~~~
 
-###3.1 NativeSessionCsrfTokenStorage
+### 3.1 NativeSessionCsrfTokenStorage
 
 This library comes with a basic implementation of the CsrfTokenStorageInterface interface. <br />
 Use the native session using $_SESSION variable for storing the csrf token through the request.
 
 Session mechanism MUST be active or a LogicException will be thrown at construct time.
 
-##4. Validation strategy
+## 4. Validation strategy
 
 Validation strategy allows you to manipulate the state of a csrf token before and during its validation process. <br />
 It consists of a simple implementation of CsrfTokenValidateStrategyInterface.
@@ -147,12 +147,12 @@ $strategy->postSubmission(CsrfToken $token);
 
 This library provides you 3 implemented validation strategies.
 
-###4.1 PerSessionCsrfTokenValidationStrategy
+### 4.1 PerSessionCsrfTokenValidationStrategy
 
 The most **simple** validation strategy. It let the session mechanism handle the invalidation of an already generated csrf token. <br />
 In other words, the csrf token is valid during the whole session. 
 
-###4.2 UniqueCsrfTokenValidationStrategy
+### 4.2 UniqueCsrfTokenValidationStrategy
 
 UniqueCsrfTokenValidationStategy allows you to invalidate a token in two differents ways, depending of the refresh parameter setted at construct time. <br />
 This stategy interacts with a CsrfTokenManagerInterface for invalidating the csrf token
@@ -169,7 +169,7 @@ $strategy = new UniqueCsrfTokenValidationStrategy();
 $strategy = new UniqueCsrfTokenValidationStrategy(true); 
 ~~~
 
-###4.3 TimedCsrfTokenValidationStrategy
+### 4.3 TimedCsrfTokenValidationStrategy
 
 TimedCsrfTokenValidationStrategy generate a unique csrf token for each request and based on its generation time invalidate it.
 
@@ -185,15 +185,15 @@ $strategy = new TimedCsrfTokenValidationStrategy($validInterval);
 // given this configuration, the token is valid for only 10 minutes
 ~~~
 
-##5. Csrf token manager
+## 5. Csrf token manager
 
 CsrfTokenManagerInterface is the main component responsible to provide, invalidate and validate csrf token.
 
-###5.1 General
+### 5.1 General
 
 Let's describe how the interface is handling the csrf token
 
-####5.1.1 Getting a Csrf token
+#### 5.1.1 Getting a Csrf token
 
 No matter what, the manager MUST provide an instance of CsrfToken. <br />
 This token can be newly generated or fetched from a store mechanism (session...).
@@ -212,13 +212,13 @@ $tokenNewlyGenerated === $tokenFetched;
 
 If an error happen during the generation process, a CriticalCsrfException is thrown
 
-####5.1.2 Invalidate a Csrf token
+#### 5.1.2 Invalidate a Csrf token
 
 Remove an already generated csrf token
 
 If this csrf token cannot be removed, a CriticalCsrfException is thrown
 
-####5.1.3 Validate a Csrf token
+#### 5.1.3 Validate a Csrf token
 
 Simply validate a previously generated (by generate() method) over a given csrf token.
 
@@ -249,7 +249,7 @@ $manager->generate(); // let's assume the generated token has for value Foo
 $manager->validate(new CsrfToken("Bar"));
 ~~~
 
-###5.2 Implementation
+### 5.2 Implementation
 
 This library provides an implementation of CsrfTokenManagerInterface based on the components described above.
 
