@@ -20,7 +20,7 @@ use Ness\Component\Csrf\CsrfToken;
  * @author CurtisBarogla <curtis_barogla@outlook.fr>
  *
  */
-class RandomByteCsrfTokenGenerator implements CsrfTokenGeneratorInterface
+final class RandomByteCsrfTokenGenerator implements CsrfTokenGeneratorInterface
 {
     
     /**

@@ -28,7 +28,7 @@ class ApacheUniqueIdCsrfTokenGenerator implements CsrfTokenGeneratorInterface
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Generator\CsrfTokenGeneratorInterface::generate()
      */
-    public function generate(): CsrfToken
+    final public function generate(): CsrfToken
     {
         return new CsrfToken(\hash("sha256", $this->getHeader()));
     }
