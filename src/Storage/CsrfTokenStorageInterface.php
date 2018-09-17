@@ -46,7 +46,8 @@ interface CsrfTokenStorageInterface
      * Delete a stored Csrf token 
      * 
      * @return bool
-     *   True if the Csrf token has been correctly deleted from the store. False otherwise
+     *   True if the Csrf token has been correctly deleted from the store. False otherwise.
+     *   MUST return false only if the token cannot be deleted and never if no token has been found
      */
     public function delete(): bool;
     
