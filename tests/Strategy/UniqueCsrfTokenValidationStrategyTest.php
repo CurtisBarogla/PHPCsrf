@@ -70,6 +70,10 @@ class UniqueCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationS
         $strategy = new UniqueCsrfTokenValidationStrategy();
         $strategy->setManager($manager);
         $this->assertNull($strategy->postSubmission(new CsrfToken("Foo")));
+        
+        $strategy = new UniqueCsrfTokenValidationStrategy(true);
+        $strategy->setManager($manager);
+        $this->assertNull($strategy->postSubmission(new CsrfToken("Foo")));
     }
     
     /**

@@ -70,7 +70,8 @@ class UniqueCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyIn
      */
     public function postSubmission(CsrfToken $token): void
     {
-        $this->manager->invalidate();
+        if(!$this->refresh)
+            $this->manager->invalidate();
     }
     
 }
