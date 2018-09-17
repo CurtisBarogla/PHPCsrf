@@ -77,9 +77,6 @@ class NativeSessionCsrfTokenStorage implements CsrfTokenStorageInterface
      */
     public function delete(): bool
     {
-        if(!isset($this->session[self::CSRF_TOKEN_SESSION_IDENTIFIER]))
-            return false;
-        
         unset($this->session[self::CSRF_TOKEN_SESSION_IDENTIFIER]);
         
         return true;

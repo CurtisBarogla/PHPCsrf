@@ -98,12 +98,10 @@ namespace NessTest\Component\Csrf\Storage {
             
             $storage = new NativeSessionCsrfTokenStorage();
             $this->injectSession($storage);
-            
-            $this->assertFalse($storage->delete());
             $storage->store($token);
             
             $this->assertTrue($storage->delete());
-            $this->assertFalse($storage->delete());
+            $this->assertTrue($storage->delete());
         }
         
                         /**_____EXCEPTIONS_____**/
