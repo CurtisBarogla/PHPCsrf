@@ -21,6 +21,7 @@ use Ness\Component\Csrf\CsrfToken;
 use Ness\Component\Csrf\Exception\CsrfTokenNotFoundException;
 use Ness\Component\Csrf\Exception\InvalidCsrfTokenException;
 use Ness\Component\Csrf\CsrfTokenManagerAwareInterface;
+use Ness\Component\Csrf\Exception\CriticalCsrfException;
 
 /**
  * CsrfTokenManager testcase
@@ -72,7 +73,7 @@ class CsrfTokenManagerTest extends CsrfTestCase
     public function testInvalidate(): void
     {
         $action = function(MockObject $generator, MockObject $storage, MockObject $strategy): void {
-            $storage->expects($this->once())->method("delete");
+            $storage->expects($this->once())->method("delete")->will($this->returnValue(true));
         };
         
         $manager = $this->getManager($action);
@@ -87,10 +88,11 @@ class CsrfTokenManagerTest extends CsrfTestCase
     {
         $tokenGiven = new CsrfToken("Foo");
         $tokenStored = new CsrfToken("Foo");
-        $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($tokenGiven, $tokenStored): void {
-            $strategy->expects($this->once())->method("onSubmission");
-            $strategy->expects($this->once())->method("postSubmission");
-            $storage->expects($this->exactly(2))->method("get")->will($this->returnValue($tokenStored));
+        $tokenUpdated = new CsrfToken("Foo");
+        $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($tokenGiven, $tokenStored, $tokenUpdated): void {
+            $strategy->expects($this->once())->method("onSubmission")->with($tokenStored);
+            $strategy->expects($this->once())->method("postSubmission")->with($tokenUpdated);
+            $storage->expects($this->exactly(2))->method("get")->will($this->onConsecutiveCalls($tokenStored, $tokenUpdated));
         };
         
         $manager = $this->getManager($action);
@@ -99,6 +101,39 @@ class CsrfTokenManagerTest extends CsrfTestCase
     }
     
                     /**_____EXCEPTIONS_____**/
+    
+    /**
+     * @see \Ness\Component\Csrf\CsrfTokenManager::generate()
+     */
+    public function testExceptionGenerateWhenTokenCannotBeStored(): void
+    {
+        $this->expectException(CriticalCsrfException::class);
+        
+        $token = new CsrfToken("Foo");
+        $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($token): void {
+            $generator->expects($this->once())->method("generate")->will($this->returnValue($token));
+            $storage->expects($this->once())->method("store")->with($token)->will($this->returnValue(false));
+        };
+        
+        $manager = $this->getManager($action);
+        $manager->generate();
+    }
+    
+    /**
+     * @see \Ness\Component\Csrf\CsrfTokenManager::invalidate()
+     */
+    public function testExceptionInvalidWhenCsrfTokenCannotBeInvalidated(): void
+    {
+        $this->expectException(CriticalCsrfException::class);
+        
+        $token = new CsrfToken("Foo");
+        $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($token): void {
+            $storage->expects($this->once())->method("delete")->will($this->returnValue(false));
+        };
+        
+        $manager = $this->getManager($action);
+        $manager->invalidate();
+    }
     
     /**
      * @see \Ness\Component\Csrf\CsrfTokenManager::validate()

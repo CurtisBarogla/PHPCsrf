@@ -14,6 +14,7 @@ namespace Ness\Component\Csrf;
 
 use Ness\Component\Csrf\Exception\InvalidCsrfTokenException;
 use Ness\Component\Csrf\Exception\CsrfTokenNotFoundException;
+use Ness\Component\Csrf\Exception\CriticalCsrfException;
 
 /**
  * Responsible to generate and validate Csrf tokens
@@ -29,11 +30,17 @@ interface CsrfTokenManagerInterface
      * 
      * @return CsrfToken
      *   Csrf token
+     *   
+     * @throws CriticalCsrfException
+     *   When an error happen during the generation process 
      */
     public function generate(): CsrfToken;
     
     /**
      * Invalidate an already generated csrf token
+     * 
+     * @throws CriticalCsrfException
+     *   When the token failed to be invalidated
      */
     public function invalidate(): void;
     

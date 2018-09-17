@@ -17,6 +17,7 @@ use Ness\Component\Csrf\Storage\CsrfTokenStorageInterface;
 use Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface;
 use Ness\Component\Csrf\Exception\CsrfTokenNotFoundException;
 use Ness\Component\Csrf\Exception\InvalidCsrfTokenException;
+use Ness\Component\Csrf\Exception\CriticalCsrfException;
 
 /**
  * Native implementation of CsrfTokenManagerInterface
@@ -81,7 +82,9 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
         $this->strategy->onGeneration();
         if(null === $token = $this->storage->get()) {
             $token = $this->generator->generate();
-            $this->storage->store($token);
+            if(false === $this->storage->store($token))
+                throw new CriticalCsrfException(\sprintf("Failed to store the csrf token into the given store '%s'",
+                    \get_class($this->storage)));
         }
         
         return $token;
@@ -93,7 +96,9 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
      */
     public function invalidate(): void
     {
-        $this->storage->delete();
+        if(false === $this->storage->delete())
+            throw new CriticalCsrfException(\sprintf("Failed to invalidate the csrf token provided by the given store '%s'",
+                \get_class($this->storage)));
     }
     
     /**
