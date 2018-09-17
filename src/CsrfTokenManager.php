@@ -113,8 +113,10 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
         $this->strategy->onSubmission($stored);
         
         try {
-            if(!\hash_equals( ( $stored = $this->storage->get() )->get(), $token->get()))
+            if(!\hash_equals( ( $stored = $this->storage->get() )->get(), $token->get())) {
+                $this->invalidate();                
                 throw new InvalidCsrfTokenException("Invalid csrf token given");            
+            }
         } catch (\Error $e) {
             throw new InvalidCsrfTokenException("Invalid csrf token given");
         }

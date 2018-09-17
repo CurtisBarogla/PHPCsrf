@@ -165,6 +165,7 @@ class CsrfTokenManagerTest extends CsrfTestCase
             $strategy->expects($this->once())->method("onSubmission");
             $strategy->expects($this->never())->method("postSubmission");
             $storage->expects($this->exactly(2))->method("get")->will($this->returnValue($tokenStored));
+            $storage->expects($this->once())->method("delete")->will($this->returnValue(true));
         };
         
         $manager = $this->getManager($action);
