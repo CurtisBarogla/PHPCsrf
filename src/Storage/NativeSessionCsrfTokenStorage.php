@@ -35,7 +35,7 @@ class NativeSessionCsrfTokenStorage implements CsrfTokenStorageInterface
      * 
      * @var string
      */
-    private const CSRF_TOKEN_SESSION_IDENTIFIER = "_csrf_token_";
+    private const CSRF_TOKEN_SESSION_IDENTIFIER = "ness_csrf_token_";
     
     /**
      * Initialize storage
