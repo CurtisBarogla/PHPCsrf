@@ -12,7 +12,9 @@ declare(strict_types = 1);
 
 namespace Ness\Component\Csrf\Strategy;
 
-use Ness\Component\Csrf\CsrfTokenManagerInterface;
+use Ness\Component\Csrf\CsrfTokenManagerAwareInterface;
+use Ness\Component\Csrf\Traits\CsrfTokenManagerAwareTrait;
+use Ness\Component\Csrf\CsrfToken;
 
 /**
  * Validate a csrf token based on an expiration time
@@ -20,8 +22,10 @@ use Ness\Component\Csrf\CsrfTokenManagerInterface;
  * @author CurtisBarogla <curtis_barogla@outlook.fr>
  *
  */
-class TimedCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationStrategy
+class TimedCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyInterface, CsrfTokenManagerAwareInterface
 {
+    
+    use CsrfTokenManagerAwareTrait;
     
     /**
      * Interval of time which the token is valid for the current request
@@ -45,26 +49,26 @@ class TimedCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationStrate
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::onGeneration()
      */
-    public function onGeneration(CsrfTokenManagerInterface $manager): void
+    public function onGeneration(): void
     {
-        $manager->invalidate();
+        $this->manager->invalidate();
     }
 
     /**
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::onSubmission()
      */
-    public function onSubmission(CsrfTokenManagerInterface $manager): void
+    public function onSubmission(CsrfToken $token): void
     {
-        if($this->getToken()->generatedAt()->add($this->interval) < new \DateTime())          
-            $manager->invalidate();
+        if($token->generatedAt()->add($this->interval) < new \DateTime())          
+            $this->manager->invalidate();
     }
 
     /**
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::postSubmission()
      */
-    public function postSubmission(CsrfTokenManagerInterface $manager): void
+    public function postSubmission(CsrfToken $token): void
     {
         return;
     }

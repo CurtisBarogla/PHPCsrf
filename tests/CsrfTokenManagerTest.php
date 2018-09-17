@@ -20,6 +20,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Ness\Component\Csrf\CsrfToken;
 use Ness\Component\Csrf\Exception\CsrfTokenNotFoundException;
 use Ness\Component\Csrf\Exception\InvalidCsrfTokenException;
+use Ness\Component\Csrf\CsrfTokenManagerAwareInterface;
 
 /**
  * CsrfTokenManager testcase
@@ -31,6 +32,20 @@ use Ness\Component\Csrf\Exception\InvalidCsrfTokenException;
  */
 class CsrfTokenManagerTest extends CsrfTestCase
 {
+    
+    /**
+     * @see \Ness\Component\Csrf\CsrfTokenManager::__construct()
+     */
+    public function test__constructWithACsrfTokenManagerAwareStrategy(): void
+    {
+        
+        $generator = $this->getMockBuilder(CsrfTokenGeneratorInterface::class)->getMock();
+        $storage = $this->getMockBuilder(CsrfTokenStorageInterface::class)->getMock();
+        $strategy = $this->getMockBuilder([CsrfTokenValidationStrategyInterface::class, CsrfTokenManagerAwareInterface::class])->getMock();
+        $strategy->expects($this->once())->method("setManager");
+        
+        $manager = new CsrfTokenManager($generator, $storage, $strategy);
+    }
     
     /**
      * @see \Ness\Component\Csrf\CsrfTokenManager::generate()
@@ -73,7 +88,6 @@ class CsrfTokenManagerTest extends CsrfTestCase
         $tokenGiven = new CsrfToken("Foo");
         $tokenStored = new CsrfToken("Foo");
         $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($tokenGiven, $tokenStored): void {
-            $strategy->expects($this->once())->method("setToken")->with($tokenStored);
             $strategy->expects($this->once())->method("onSubmission");
             $strategy->expects($this->once())->method("postSubmission");
             $storage->expects($this->exactly(2))->method("get")->will($this->returnValue($tokenStored));
@@ -113,7 +127,6 @@ class CsrfTokenManagerTest extends CsrfTestCase
         $tokenGiven = new CsrfToken("Bar");
         $tokenStored = new CsrfToken("Foo");
         $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($tokenGiven, $tokenStored): void {
-            $strategy->expects($this->once())->method("setToken")->with($tokenStored);
             $strategy->expects($this->once())->method("onSubmission");
             $strategy->expects($this->never())->method("postSubmission");
             $storage->expects($this->exactly(2))->method("get")->will($this->returnValue($tokenStored));
@@ -135,7 +148,6 @@ class CsrfTokenManagerTest extends CsrfTestCase
         $tokenGiven = new CsrfToken("Bar");
         $tokenStored = new CsrfToken("Foo");
         $action = function(MockObject $generator, MockObject $storage, MockObject $strategy) use ($tokenGiven, $tokenStored): void {
-            $strategy->expects($this->once())->method("setToken")->with($tokenStored);
             $strategy->expects($this->once())->method("onSubmission");
             $strategy->expects($this->never())->method("postSubmission");
             $storage->expects($this->exactly(2))->method("get")->will($this->onConsecutiveCalls($tokenStored, null));

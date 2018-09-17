@@ -45,27 +45,6 @@ abstract class AbstractCsrfTokenValidationStrategyTest extends CsrfTestCase
     }
     
     /**
-     * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::setToken()
-     */
-    public function testSetToken(): void
-    {
-        $token = new CsrfToken("Foo");
-        
-        $this->assertNull($this->strategy->setToken($token));
-    }
-    
-    /**
-     * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::getToken()
-     */
-    public function testGetToken(): void
-    {
-        $token = new CsrfToken("Foo");
-        
-        $this->strategy->setToken($token);
-        $this->assertSame($token, $this->strategy->getToken());
-    }
-    
-    /**
      * Get a mocked csrf managet
      * 
      * @param \Closure|null $action

@@ -12,22 +12,23 @@ declare(strict_types = 1);
 
 namespace Ness\Component\Csrf\Strategy;
 
-use Ness\Component\Csrf\CsrfTokenManagerInterface;
+use Ness\Component\Csrf\CsrfToken;
 
 /**
- * Token is valid during the session lifetime
+ * Token is valid during the session lifetime.
+ * Report to session mechanism
  * 
  * @author CurtisBarogla <curtis_barogla@outlook.fr>
  *
  */
-class PerSessionCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationStrategy
+class PerSessionCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyInterface
 {
-
+    
     /**
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::onGeneration()
      */
-    public function onGeneration(CsrfTokenManagerInterface $token): void
+    public function onGeneration(): void
     {
         return;
     }
@@ -36,7 +37,7 @@ class PerSessionCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationS
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::onSubmission()
      */
-    public function onSubmission(CsrfTokenManagerInterface $manager): void
+    public function onSubmission(CsrfToken $token): void
     {
         return;
     }
@@ -45,7 +46,7 @@ class PerSessionCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationS
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::postSubmission()
      */
-    public function postSubmission(CsrfTokenManagerInterface $manager): void
+    public function postSubmission(CsrfToken $token): void
     {
         return;
     }

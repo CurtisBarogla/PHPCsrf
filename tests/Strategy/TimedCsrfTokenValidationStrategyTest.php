@@ -39,7 +39,8 @@ class TimedCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationSt
         
         $strategy = new TimedCsrfTokenValidationStrategy(new \DateInterval("P42D"));
         
-        $this->assertNull($strategy->onGeneration($manager));
+        $this->assertNull($strategy->setManager($manager));
+        $this->assertNull($strategy->onGeneration());
     }
     
     /**
@@ -52,13 +53,14 @@ class TimedCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationSt
         });
             
         $strategy = new TimedCsrfTokenValidationStrategy(new \DateInterval("P42D"));
-        $strategy->setToken(new CsrfToken("Foo"));
-        $this->assertNull($strategy->onSubmission($manager));
+        $strategy->setManager($manager);
+        $this->assertNull($strategy->onSubmission(new CsrfToken("Foo")));
         
         $strategy = new TimedCsrfTokenValidationStrategy(new \DateInterval("PT1S"));
-        $strategy->setToken(new CsrfToken("Foo"));
+        $strategy->setManager($manager);
+        $token = new CsrfToken("Foo");
         \sleep(2);
-        $this->assertNull($strategy->onSubmission($manager));
+        $this->assertNull($strategy->onSubmission($token));
     }
     
     /**
@@ -66,7 +68,7 @@ class TimedCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationSt
      */
     public function testPostSubmission(): void 
     {
-        $this->assertNull($this->strategy->postSubmission($this->getManager()));
+        $this->assertNull($this->strategy->postSubmission(new CsrfToken("Foo")));
     }
     
     /**

@@ -12,7 +12,9 @@ declare(strict_types = 1);
 
 namespace Ness\Component\Csrf\Strategy;
 
-use Ness\Component\Csrf\CsrfTokenManagerInterface;
+use Ness\Component\Csrf\CsrfTokenManagerAwareInterface;
+use Ness\Component\Csrf\Traits\CsrfTokenManagerAwareTrait;
+use Ness\Component\Csrf\CsrfToken;
 
 /**
  * Csrf token is invalidated when consumed
@@ -20,8 +22,10 @@ use Ness\Component\Csrf\CsrfTokenManagerInterface;
  * @author CurtisBarogla <curtis_barogla@outlook.fr>
  *
  */
-class UniqueCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationStrategy
+class UniqueCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyInterface, CsrfTokenManagerAwareInterface
 {
+    
+    use CsrfTokenManagerAwareTrait;
  
     /**
      * If token must be refreshed on each request
@@ -45,17 +49,17 @@ class UniqueCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationStrat
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::onGeneration()
      */
-    public function onGeneration(CsrfTokenManagerInterface $manager): void
+    public function onGeneration(): void
     {
         if($this->refresh)
-            $manager->invalidate();
+            $this->manager->invalidate();
     }
     
     /**
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::onSubmission()
      */
-    public function onSubmission(CsrfTokenManagerInterface $manager): void
+    public function onSubmission(CsrfToken $token): void
     {
         return;
     }
@@ -64,9 +68,9 @@ class UniqueCsrfTokenValidationStrategy extends AbstractCsrfTokenValidationStrat
      * {@inheritDoc}
      * @see \Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface::postSubmission()
      */
-    public function postSubmission(CsrfTokenManagerInterface $manager): void
+    public function postSubmission(CsrfToken $token): void
     {
-        $manager->invalidate();
+        $this->manager->invalidate();
     }
     
 }

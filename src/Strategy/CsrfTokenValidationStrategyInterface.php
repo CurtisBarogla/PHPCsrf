@@ -12,7 +12,6 @@ declare(strict_types = 1);
 
 namespace Ness\Component\Csrf\Strategy;
 
-use Ness\Component\Csrf\CsrfTokenManagerInterface;
 use Ness\Component\Csrf\CsrfToken;
 
 /**
@@ -25,43 +24,24 @@ interface CsrfTokenValidationStrategyInterface
 {
     
     /**
-     * Executed when the manager generate a token
-     * 
-     * @param CsrfTokenManagerInterface $manager
-     *   Csrf manager
+     * Executed when the generation process happened
      */
-    public function onGeneration(CsrfTokenManagerInterface $manager): void;
+    public function onGeneration(): void;
     
     /**
      * Executed when the token is processed
      * 
-     * @param CsrfTokenManagerInterface $manager
-     *   Csrf manager
+     * @param CsrfToken $token
+     *   Token processed
      */
-    public function onSubmission(CsrfTokenManagerInterface $manager): void;
+    public function onSubmission(CsrfToken $token): void;
     
     /**
      * Executed after the token has been processed and considered valid
      * 
-     * @param CsrfTokenManagerInterface $manager
-     *   Csrf manager
-     */
-    public function postSubmission(CsrfTokenManagerInterface $manager): void;
-    
-    /**
-     * Get the token currently submitted to the validated process
-     * 
-     * @return CsrfToken
-     *   Csrf token
-     */
-    public function getToken(): CsrfToken;
-    
-    /**
-     * Set the token
-     * 
      * @param CsrfToken $token
-     *   Csrf token
+     *   Token processed
      */
-    public function setToken(CsrfToken $token): void;
+    public function postSubmission(CsrfToken $token): void;
     
 }

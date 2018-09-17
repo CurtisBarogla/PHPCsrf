@@ -38,15 +38,16 @@ class UniqueCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationS
         });
         
         $strategy = new UniqueCsrfTokenValidationStrategy();
-        $this->assertNull($strategy->onGeneration($manager));
+        $strategy->setManager($manager);
+        $this->assertNull($strategy->onGeneration());
         
         $manager = $this->getManager(function(MockObject $manager, CsrfToken $token): void {
             $manager->expects($this->once())->method("invalidate");
         });
         
         $strategy = new UniqueCsrfTokenValidationStrategy(true);
-        
-        $this->assertNull($strategy->onGeneration($manager));
+        $strategy->setManager($manager);
+        $this->assertNull($strategy->onGeneration());
     }
     
     /**
@@ -54,7 +55,7 @@ class UniqueCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationS
      */
     public function testOnSubmission(): void
     {
-        $this->assertNull($this->strategy->onSubmission($this->getManager()));
+        $this->assertNull($this->strategy->onSubmission(new CsrfToken("Foo")));
     }
     
     /**
@@ -67,8 +68,8 @@ class UniqueCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidationS
         });
             
         $strategy = new UniqueCsrfTokenValidationStrategy();
-            
-        $this->assertNull($strategy->postSubmission($manager));
+        $strategy->setManager($manager);
+        $this->assertNull($strategy->postSubmission(new CsrfToken("Foo")));
     }
     
     /**

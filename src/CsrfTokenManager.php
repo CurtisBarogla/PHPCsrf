@@ -67,6 +67,9 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
         $this->generator = $generator;
         $this->storage = $storage;
         $this->strategy = $strategy;
+        
+        if($this->strategy instanceof CsrfTokenManagerAwareInterface)
+            $this->strategy->setManager($this);
     }
     
     /**
@@ -75,7 +78,7 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
      */
     public function generate(): CsrfToken
     {
-        $this->strategy->onGeneration($this);
+        $this->strategy->onGeneration();
         if(null === $token = $this->storage->get()) {
             $token = $this->generator->generate();
             $this->storage->store($token);
@@ -102,17 +105,16 @@ class CsrfTokenManager implements CsrfTokenManagerInterface
         if(null === $stored = $this->storage->get())
             throw new CsrfTokenNotFoundException("Csrf token not found");
         
-        $this->strategy->setToken($stored);
-        $this->strategy->onSubmission($this);
+        $this->strategy->onSubmission($stored);
         
         try {
-            if(!\hash_equals($this->storage->get()->get(), $token->get()))
+            if(!\hash_equals( ( $stored = $this->storage->get() )->get(), $token->get()))
                 throw new InvalidCsrfTokenException("Invalid csrf token given");            
         } catch (\Error $e) {
             throw new InvalidCsrfTokenException("Invalid csrf token given");
         }
         
-        $this->strategy->postSubmission($this);
+        $this->strategy->postSubmission($stored);
     }
 
 }

@@ -15,6 +15,7 @@ namespace NessTest\Component\Csrf\Strategy;
 
 use Ness\Component\Csrf\Strategy\PerSessionCsrfTokenValidationStrategy;
 use Ness\Component\Csrf\Strategy\CsrfTokenValidationStrategyInterface;
+use Ness\Component\Csrf\CsrfToken;
 
 /**
  * PerSessionCsrfTokenValidationStrategy testcase
@@ -32,7 +33,7 @@ class PerSessionCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidat
      */
     public function testOnGeneration(): void
     {
-        $this->assertNull($this->strategy->onGeneration($this->getManager(null)));
+        $this->assertNull($this->strategy->onGeneration());
     }
     
     /**
@@ -40,7 +41,7 @@ class PerSessionCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidat
      */
     public function testOnSubmission(): void
     {
-        $this->assertNull($this->strategy->onSubmission($this->getManager(null)));
+        $this->assertNull($this->strategy->onSubmission(new CsrfToken("Foo")));
     }
     
     /**
@@ -48,7 +49,7 @@ class PerSessionCsrfTokenValidationStrategyTest extends AbstractCsrfTokenValidat
      */
     public function testPostSubmission(): void
     {
-        $this->assertNull($this->strategy->postSubmission($this->getManager(null)));
+        $this->assertNull($this->strategy->postSubmission(new CsrfToken("Foo")));
     }
 
     /**
