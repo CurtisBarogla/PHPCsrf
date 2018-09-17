@@ -52,7 +52,7 @@ This library comes with two basics implementations
 
 RandomByteCsrfTokenGenerator is the simpliest way to get a secure (csrf token speaking) value. Token length is setted by default to 32 characters and can be changed via the constructor.
 
-Setting a length token value lower than 2 will result an Error at generation time. No verification are done whatsoever on this parameter into the constructor.
+Setting a length token value **lower** than 2 will result an Error at generation time. **No verification are done** whatsoever on this parameter into the constructor.
 
 ### 2.2 ApacheUniqueIdCsrfTokenGenerator
 
@@ -149,7 +149,7 @@ This library provides you 3 implemented validation strategies.
 
 ###4.1 PerSessionCsrfTokenValidationStrategy
 
-The most simple validation strategy. It let the session mechanism handle the invalidation of an already generated csrf token. <br />
+The most **simple** validation strategy. It let the session mechanism handle the invalidation of an already generated csrf token. <br />
 In other words, the csrf token is valid during the whole session. 
 
 ###4.2 UniqueCsrfTokenValidationStrategy
