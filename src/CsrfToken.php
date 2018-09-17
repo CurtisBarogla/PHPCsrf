@@ -44,7 +44,7 @@ final class CsrfToken
     public function __construct(string $value)
     {
         $this->value = $value;
-        $this->generatedAt = new \DateTime();
+        $this->generatedAt = new \DateTimeImmutable();
     }
     
     /**
@@ -64,7 +64,7 @@ final class CsrfToken
      * @return \DateTime
      *   When the token has been generated
      */
-    public function generatedAt(): \DateTime
+    public function generatedAt(): \DateTimeImmutable
     {
         return $this->generatedAt;
     }
