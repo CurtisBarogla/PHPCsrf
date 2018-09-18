@@ -280,7 +280,7 @@ $manager->generate(); // assume token has for value Foo;
 try {
     $manager->validate(new CsrfToken("Foo"));
 } catch(InvalidCsrfTokenException|CsrfTokenNotFoundException $e) {
-    // handle when csrf token is invalid or not preciously generated
+    // handle when csrf token is invalid or not previously generated
 }
 ~~~
 
