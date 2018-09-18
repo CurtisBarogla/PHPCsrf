@@ -118,7 +118,7 @@ It consists in a simple interface providing storing and access methods to a csrf
 $store = new CsrfTokenStoreImplementation(); 
 // storing a csrf token
 $store->store(new CsrfToken("Foo"));
-// get a csrf token (will return null if no csrf token has been found for the current call))
+// get a csrf token (will return null if no csrf token has been found for the current call)
 $store->get();
 // delete the token from the store (returns true or false)
 $store->delete();
@@ -127,7 +127,7 @@ $store->delete();
 ### 3.1 NativeSessionCsrfTokenStorage
 
 This library comes with a basic implementation of the CsrfTokenStorageInterface interface. <br />
-Use the native session using $_SESSION variable for storing the csrf token through the request.
+Use the native session using $\_SESSION variable for storing the csrf token through the request.
 
 Session mechanism MUST be active or a LogicException will be thrown at construct time.
 
@@ -246,7 +246,7 @@ $manager->validate(new CsrfToken("Foo"));
 
 $manager = new CsrfManagerImplementation();
 
-// will throw a CsrfTokenNotFoundException
+// will throw a InvalidCsrfTokenException
 $manager->generate(); // let's assume the generated token has for value Foo
 $manager->validate(new CsrfToken("Bar"));
 ~~~
