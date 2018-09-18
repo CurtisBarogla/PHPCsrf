@@ -8,6 +8,8 @@ This library provides a simple way to generate and validate csrf token.
 3. [Store CSRF token](#3-store-csrf-token)
 4. [Validation strategy](#4-validation-strategy)
 5. [Csrf token manager](#5-csrf-token-manager)
+6. [Contributing](#6-contributing)
+7. [License](#7-license)
 
 ## 0. Installing the component
 
@@ -281,3 +283,12 @@ try {
 	// handle when csrf token is invalid or not preciously generated
 }
 ~~~
+
+## 6. Contributing
+
+Found something **wrong** (nothing is perfect) ? Wanna talk or participate ? <br />
+Issue the case or contact me at [curtis_barogla@outlook.fr](mailto:curtis_barogla@outlook.fr)
+
+## 7. License
+
+The Ness Csrf component is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
