@@ -3,13 +3,14 @@
 This library provides a simple way to generate and validate csrf token.
 
 0. [How to install](#0-installing-the-component)
-1. [CSRF Token](#1-csrf-token)
-2. [Generate CSRF token](#2-generate-csrf-token)
-3. [Store CSRF token](#3-store-csrf-token)
-4. [Validation strategy](#4-validation-strategy)
-5. [Csrf token manager](#5-csrf-token-manager)
-6. [Contributing](#6-contributing)
-7. [License](#7-license)
+1. [How to use](#1-how-to-use)
+2. [CSRF Token](#2-csrf-token)
+3. [Generate CSRF token](#3-generate-csrf-token)
+4. [Store CSRF token](#4-store-csrf-token)
+5. [Validation strategy](#5-validation-strategy)
+6. [Csrf token manager](#6-csrf-token-manager)
+7. [Contributing](#7-contributing)
+8. [License](#8-license)
 
 ## 0. Installing the component
 
@@ -19,7 +20,69 @@ Csrf library can be installed via composer
 $ composer require ness/csrf
 ~~~
 
-## 1. CSRF token
+## 1. How to use
+
+This library allows you through a CsrfTokenManager to generate and validate CsrfToken.
+
+The CsrfTokenManager requires you just to provide some settings : 
+- a [generator](#3-generate-csrf-token),
+- a [store](#4-store-csrf-token),
+- a [strategy](#5-validation-strategy).
+
+Let's see a simple example which use the native session mechanism of PHP, a basic generator and a strategy persisting the csrf token during the lifetime of the user's session in a naive, of course very secure (◔_◔), scenario :
+
+~~~php
+<?php
+$generator = new RandomByteCsrfTokenGenerator(64); // will generate a 64 length csrf token
+$store = new NativeSessionCsrfTokenStorage(); // requires session enabled !
+$strategy = new PerSessionCsrfTokenValidationStrategy(); // csrf token is persisted for the session duration
+
+$manager = new CsrfTokenManager($generator, $store, $strategy);
+~~~
+
+~~~html
+<!DOCTYPE>
+<html>
+    <body>
+        <h1>What to do with the world today ? </h1>
+        <form action="yhwh.php" method="POST">
+            <input type="radio" name="whattodo_whattodo" id="destroy" value="destroy"> 
+            <label for="destroy">No life will be persisted ! [DANGER ZONE]</label> <br />
+            
+            <input type="radio" name="whattodo_whattodo" id="restore" value="restore"> 
+            <label for="restore">RESET THIS !</label> <br />
+            
+            <input type="radio" name="whattodo_whattodo" id="nothing" value="nothing"> 
+            <label for="nothing">Nothing...</label> <br />
+            
+            <input type="hidden" name="csrf_token" value="<?= $manager->generate() ?>" />
+            
+            <button>ACT !</button>
+        </form>
+    </body>
+</html>
+~~~
+
+
+~~~php
+<?php
+// yhwh.php
+if($_SERVER["REQUEST_METHOD"] === "POST") {
+    try {
+        $manager->validate(new CsrfToken($_POST["csrf_token"] ?? null));
+        update_world($_POST["whattodo_whattodo"]); 
+        // nicely done !
+    } catch(InvalidCsrfTokenException|CsrfTokenNotFoundException|TypeError $e) {
+        // someone tried to modify the world ! bad
+        die("Invalid Csrf Token");
+    }
+} else {
+    die("... you tried ?");
+}
+~~~
+
+
+## 2. CSRF token
 
 CsrfToken class is a simple way to share a csrf token representation among all components responsible of its validation.
 
@@ -37,7 +100,7 @@ $token->generatedAt() // provide when the token has been generated as a DateTime
 echo $token // will output Foo
 ~~~
 
-## 2. Generate CSRF token
+## 3. Generate CSRF token
 
 This library provides a simple interface (Ness\Component\CsrfTokenGeneratorInterface) allowing you to generate a CSRF token for later usage.
 
@@ -50,13 +113,13 @@ $generator->generate();
 
 This library comes with two basics implementations
 
-### 2.1 RandomByteCsrfTokenGenerator
+### 3.1 RandomByteCsrfTokenGenerator
 
 RandomByteCsrfTokenGenerator is the simpliest way to get a secure (csrf token speaking) value. Token length is setted by default to 32 characters and can be changed via the constructor.
 
 Setting a length token value **lower** than 2 will result an Error at generation time. **No verification are done** whatsoever on this parameter into the constructor.
 
-### 2.2 ApacheUniqueIdCsrfTokenGenerator
+### 3.2 ApacheUniqueIdCsrfTokenGenerator
 
 This implementation is based on an Apache header and needs the apache mod "mod\_unique_id" enabled.
 
@@ -107,7 +170,7 @@ class SymfonyApacheUniqueIdCsrfTokenGenerator extends ApacheUniqueIdCsrfTokenGen
 }
 ~~~
 
-## 3. Store CSRF token
+## 4. Store CSRF token
 
 A store is responsible to store an already generated csrf token for later usages.
 
@@ -124,14 +187,14 @@ $store->get();
 $store->delete();
 ~~~
 
-### 3.1 NativeSessionCsrfTokenStorage
+### 4.1 NativeSessionCsrfTokenStorage
 
 This library comes with a basic implementation of the CsrfTokenStorageInterface interface. <br />
 Use the native session using $\_SESSION variable for storing the csrf token through the request.
 
 Session mechanism MUST be active or a LogicException will be thrown at construct time.
 
-## 4. Validation strategy
+## 5. Validation strategy
 
 Validation strategy allows you to manipulate the state of a csrf token before and during its validation process. <br />
 It consists of a simple implementation of CsrfTokenValidateStrategyInterface.
@@ -149,12 +212,12 @@ $strategy->postSubmission(CsrfToken $token);
 
 This library provides you 3 implemented validation strategies.
 
-### 4.1 PerSessionCsrfTokenValidationStrategy
+### 5.1 PerSessionCsrfTokenValidationStrategy
 
 The most **simple** validation strategy. It let the session mechanism handle the invalidation of an already generated csrf token. <br />
 In other words, the csrf token is valid during the whole session. 
 
-### 4.2 UniqueCsrfTokenValidationStrategy
+### 5.2 UniqueCsrfTokenValidationStrategy
 
 UniqueCsrfTokenValidationStategy allows you to invalidate a token in two differents ways, depending of the refresh parameter setted at construct time. <br />
 This stategy interacts with a CsrfTokenManagerInterface for invalidating the csrf token
@@ -171,7 +234,7 @@ $strategy = new UniqueCsrfTokenValidationStrategy();
 $strategy = new UniqueCsrfTokenValidationStrategy(true); 
 ~~~
 
-### 4.3 TimedCsrfTokenValidationStrategy
+### 5.3 TimedCsrfTokenValidationStrategy
 
 TimedCsrfTokenValidationStrategy generate a unique csrf token for each request and based on its generation time invalidate it.
 
@@ -187,15 +250,15 @@ $strategy = new TimedCsrfTokenValidationStrategy($validInterval);
 // given this configuration, the token is valid for only 10 minutes
 ~~~
 
-## 5. Csrf token manager
+## 6. Csrf token manager
 
 CsrfTokenManagerInterface is the main component responsible to provide, invalidate and validate csrf token.
 
-### 5.1 General
+### 6.1 General
 
 Let's describe how the interface is handling the csrf token
 
-#### 5.1.1 Getting a Csrf token
+#### 6.1.1 Getting a Csrf token
 
 No matter what, the manager MUST provide an instance of CsrfToken. <br />
 This token can be newly generated or fetched from a store mechanism (session...).
@@ -214,13 +277,13 @@ $tokenNewlyGenerated === $tokenFetched;
 
 If an error happen during the generation process, a CriticalCsrfException is thrown
 
-#### 5.1.2 Invalidate a Csrf token
+#### 6.1.2 Invalidate a Csrf token
 
 Remove an already generated csrf token
 
 If this csrf token cannot be removed, a CriticalCsrfException is thrown
 
-#### 5.1.3 Validate a Csrf token
+#### 6.1.3 Validate a Csrf token
 
 Simply validate a previously generated (by generate() method) over a given csrf token.
 
@@ -251,7 +314,7 @@ $manager->generate(); // let's assume the generated token has for value Foo
 $manager->validate(new CsrfToken("Bar"));
 ~~~
 
-### 5.2 Implementation
+### 6.2 Implementation
 
 This library provides an implementation of CsrfTokenManagerInterface based on the components described above.
 
@@ -284,11 +347,11 @@ try {
 }
 ~~~
 
-## 6. Contributing
+## 7. Contributing
 
 Found something **wrong** (nothing is perfect) ? Wanna talk or participate ? <br />
 Issue the case or contact me at [curtis_barogla@outlook.fr](mailto:curtis_barogla@outlook.fr)
 
-## 7. License
+## 8. License
 
 The Ness Csrf component is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
