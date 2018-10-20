@@ -3,14 +3,15 @@
 This library provides a simple way to generate and validate csrf token.
 
 0. [How to install](#0-installing-the-component)
-1. [How to use](#1-how-to-use)
-2. [CSRF Token](#2-csrf-token)
-3. [Generate CSRF token](#3-generate-csrf-token)
-4. [Store CSRF token](#4-store-csrf-token)
-5. [Validation strategy](#5-validation-strategy)
-6. [Csrf token manager](#6-csrf-token-manager)
-7. [Contributing](#7-contributing)
-8. [License](#8-license)
+1. [Why ?](#1-why)
+2. [How to use](#2-how-to-use)
+3. [CSRF Token](#3-csrf-token)
+4. [Generate CSRF token](#4-generate-csrf-token)
+5. [Store CSRF token](#5-store-csrf-token)
+6. [Validation strategy](#6-validation-strategy)
+7. [Csrf token manager](#7-csrf-token-manager)
+8. [Contributing](#8-contributing)
+9. [License](#9-license)
 
 ## 0. Installing the component
 
@@ -20,14 +21,22 @@ Csrf library can be installed via composer
 $ composer require ness/csrf
 ~~~
 
-## 1. How to use
+## 1. Why ?
+
+This library allows you simply to check if the user who made the request is really who he is. For a simple use case see : [simple use case](#2-how-to-use).
+
+This library allows you natively to interact with the csrf token through all its validation stages via a set of strategies. See [strategy](#6-validation-strategy).
+
+This library is also **fully unit tested**.
+
+## 2. How to use
 
 This library allows you through a CsrfTokenManager to generate and validate CsrfToken.
 
 The CsrfTokenManager requires you just to provide some settings : 
-- a [generator](#3-generate-csrf-token),
-- a [store](#4-store-csrf-token),
-- a [strategy](#5-validation-strategy).
+- a [generator](#4-generate-csrf-token),
+- a [store](#5-store-csrf-token),
+- a [strategy](#6-validation-strategy).
 
 Let's see a simple example which use the native session mechanism of PHP, a basic generator and a strategy persisting the csrf token during the lifetime of the user's session in a naive, of course very secure (◔_◔), scenario :
 
@@ -82,7 +91,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
 ~~~
 
 
-## 2. CSRF token
+## 3. CSRF token
 
 CsrfToken class is a simple way to share a csrf token representation among all components responsible of its validation.
 
@@ -100,7 +109,7 @@ $token->generatedAt() // provide when the token has been generated as a DateTime
 echo $token // will output Foo
 ~~~
 
-## 3. Generate CSRF token
+## 4. Generate CSRF token
 
 This library provides a simple interface (Ness\Component\CsrfTokenGeneratorInterface) allowing you to generate a CSRF token for later usage.
 
@@ -113,13 +122,13 @@ $generator->generate();
 
 This library comes with two basics implementations
 
-### 3.1 RandomByteCsrfTokenGenerator
+### 4.1 RandomByteCsrfTokenGenerator
 
 RandomByteCsrfTokenGenerator is the simpliest way to get a secure (csrf token speaking) value. Token length is setted by default to 32 characters and can be changed via the constructor.
 
 Setting a length token value **lower** than 2 will result an Error at generation time. **No verification are done** whatsoever on this parameter into the constructor.
 
-### 3.2 ApacheUniqueIdCsrfTokenGenerator
+### 4.2 ApacheUniqueIdCsrfTokenGenerator
 
 This implementation is based on an Apache header and needs the apache mod "mod\_unique_id" enabled.
 
@@ -170,7 +179,7 @@ class SymfonyApacheUniqueIdCsrfTokenGenerator extends ApacheUniqueIdCsrfTokenGen
 }
 ~~~
 
-## 4. Store CSRF token
+## 5. Store CSRF token
 
 A store is responsible to store an already generated csrf token for later usages.
 
@@ -187,14 +196,14 @@ $store->get();
 $store->delete();
 ~~~
 
-### 4.1 NativeSessionCsrfTokenStorage
+### 5.1 NativeSessionCsrfTokenStorage
 
 This library comes with a basic implementation of the CsrfTokenStorageInterface interface. <br />
 Use the native session using $\_SESSION variable for storing the csrf token through the request.
 
 Session mechanism MUST be active or a LogicException will be thrown at construct time.
 
-## 5. Validation strategy
+## 6. Validation strategy
 
 Validation strategy allows you to manipulate the state of a csrf token before and during its validation process. <br />
 It consists of a simple implementation of CsrfTokenValidateStrategyInterface.
@@ -212,12 +221,12 @@ $strategy->postSubmission(CsrfToken $token);
 
 This library provides you 3 implemented validation strategies.
 
-### 5.1 PerSessionCsrfTokenValidationStrategy
+### 6.1 PerSessionCsrfTokenValidationStrategy
 
 The most **simple** validation strategy. It let the session mechanism handle the invalidation of an already generated csrf token. <br />
 In other words, the csrf token is valid during the whole session. 
 
-### 5.2 UniqueCsrfTokenValidationStrategy
+### 6.2 UniqueCsrfTokenValidationStrategy
 
 UniqueCsrfTokenValidationStategy allows you to invalidate a token in two differents ways, depending of the refresh parameter setted at construct time. <br />
 This stategy interacts with a CsrfTokenManagerInterface for invalidating the csrf token
@@ -234,7 +243,7 @@ $strategy = new UniqueCsrfTokenValidationStrategy();
 $strategy = new UniqueCsrfTokenValidationStrategy(true); 
 ~~~
 
-### 5.3 TimedCsrfTokenValidationStrategy
+### 6.3 TimedCsrfTokenValidationStrategy
 
 TimedCsrfTokenValidationStrategy generate a unique csrf token for each request and based on its generation time invalidate it.
 
@@ -250,15 +259,15 @@ $strategy = new TimedCsrfTokenValidationStrategy($validInterval);
 // given this configuration, the token is valid for only 10 minutes
 ~~~
 
-## 6. Csrf token manager
+## 7. Csrf token manager
 
 CsrfTokenManagerInterface is the main component responsible to provide, invalidate and validate csrf token.
 
-### 6.1 General
+### 7.1 General
 
 Let's describe how the interface is handling the csrf token
 
-#### 6.1.1 Getting a Csrf token
+#### 7.1.1 Getting a Csrf token
 
 No matter what, the manager MUST provide an instance of CsrfToken. <br />
 This token can be newly generated or fetched from a store mechanism (session...).
@@ -277,13 +286,13 @@ $tokenNewlyGenerated === $tokenFetched;
 
 If an error happen during the generation process, a CriticalCsrfException is thrown
 
-#### 6.1.2 Invalidate a Csrf token
+#### 7.1.2 Invalidate a Csrf token
 
 Remove an already generated csrf token
 
 If this csrf token cannot be removed, a CriticalCsrfException is thrown
 
-#### 6.1.3 Validate a Csrf token
+#### 7.1.3 Validate a Csrf token
 
 Simply validate a previously generated (by generate() method) over a given csrf token.
 
@@ -314,7 +323,7 @@ $manager->generate(); // let's assume the generated token has for value Foo
 $manager->validate(new CsrfToken("Bar"));
 ~~~
 
-### 6.2 Implementation
+### 7.2 Implementation
 
 This library provides an implementation of CsrfTokenManagerInterface based on the components described above.
 
@@ -347,11 +356,11 @@ try {
 }
 ~~~
 
-## 7. Contributing
+## 8. Contributing
 
 Found something **wrong** (nothing is perfect) ? Wanna talk or participate ? <br />
 Issue the case or contact me at [curtis_barogla@outlook.fr](mailto:curtis_barogla@outlook.fr)
 
-## 8. License
+## 9. License
 
 The Ness Csrf component is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
