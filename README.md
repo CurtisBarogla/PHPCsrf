@@ -41,7 +41,6 @@ The CsrfTokenManager requires you just to provide some settings :
 Let's see a simple example which use the native session mechanism of PHP, a basic generator and a strategy persisting the csrf token during the lifetime of the user's session in a naive, of course very secure (◔_◔), scenario :
 
 ~~~php
-<?php
 $generator = new RandomByteCsrfTokenGenerator(64); // will generate a 64 length csrf token
 $store = new NativeSessionCsrfTokenStorage(); // requires session enabled !
 $strategy = new PerSessionCsrfTokenValidationStrategy(); // csrf token is persisted for the session duration
@@ -74,7 +73,6 @@ $manager = new CsrfTokenManager($generator, $store, $strategy);
 
 
 ~~~php
-<?php
 // yhwh.php
 if($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
@@ -100,7 +98,6 @@ It consist of two simples accesseurs, first one representing an arbitrary value 
 Let's see how to initialized a csrf token
 
 ~~~php
-<?php
 $token = new CsrfToken("Foo"); // very secure :p
 echo $token->getValue() // will output Foo
 $token->generatedAt() // provide when the token has been generated as a DateTimeImmutable
@@ -114,7 +111,6 @@ echo $token // will output Foo
 This library provides a simple interface (Ness\Component\CsrfTokenGeneratorInterface) allowing you to generate a CSRF token for later usage.
 
 ~~~php
-<?php
 $generator = new CsrfTokenGeneratorImplementation();
 // simply generate a csrf token initialized with a "secure" value depending of the implementation at the current timestamp
 $generator->generate();
@@ -141,8 +137,6 @@ Symfony provides its own layer for accessing the request, so instead of using th
 Obviously, for this configuration to work, the current request still must be accessible and not be popped out by the Symfony kernel (generally when the response has been generated).
 
 ~~~php
-<?php
-
 /**
  * Given as example
 */
@@ -186,7 +180,6 @@ A store is responsible to store an already generated csrf token for later usages
 It consists in a simple interface providing storing and access methods to a csrf token.
 
 ~~~php
-<?php
 $store = new CsrfTokenStoreImplementation(); 
 // storing a csrf token
 $store->store(new CsrfToken("Foo"));
@@ -209,7 +202,6 @@ Validation strategy allows you to manipulate the state of a csrf token before an
 It consists of a simple implementation of CsrfTokenValidateStrategyInterface.
 
 ~~~php
-<?php
 $strategy = new CsrfTokenValidationStrategyImplementation();
 // is executed during the generation of a csrf token
 $strategy->onGeneration();
@@ -236,7 +228,6 @@ First way, and default way (refresh setted to false), the csrf token is still va
 Second way, the csrf token is always unique no matter what.
 
 ~~~php
-<?php
 // setted first way
 $strategy = new UniqueCsrfTokenValidationStrategy();
 // setted second way
@@ -252,7 +243,6 @@ This stategy interacts with a CsrfTokenManagerInterface for invalidating the csr
 A simple example : 
 
 ~~~php
-<?php
 $validInterval = new DateInterval("PT10M");
 $strategy = new TimedCsrfTokenValidationStrategy($validInterval);
 // and that's it
@@ -273,7 +263,6 @@ No matter what, the manager MUST provide an instance of CsrfToken. <br />
 This token can be newly generated or fetched from a store mechanism (session...).
 
 ~~~php
-<?php
 $manager = new CsrfManagerImplementation();
 // provide a newly generated csrf token
 $tokenNewlyGenerated = $manager->generate();
@@ -297,7 +286,6 @@ If this csrf token cannot be removed, a CriticalCsrfException is thrown
 Simply validate a previously generated (by generate() method) over a given csrf token.
 
 ~~~php
-<?php
 $manager = new CsrfManagerImplementation();
 $manager->generate(); // let's assume the generated token has for value Foo
 $manager->validate(new CsrfToken("Foo"));
@@ -310,7 +298,6 @@ The validation process throws two kinds of exception depending of the context.
 A CsrfTokenNotFoundException if no token has been previously generated or a InvalidCsrfTokenException if a token has been found but does not match the given one.
 
 ~~~php
-<?php
 $manager = new CsrfManagerImplementation();
 
 // will throw a CsrfTokenNotFoundException
@@ -336,7 +323,6 @@ postSubmission() method is called when the given token corresponds the stored on
 Let's see how to instantiate it and use it.
 
 ~~~php
-<?php
 $generator = new CsrfTokenGeneratorImplementation();
 $store = new CsrfTokenStorageImplementation();
 $strategy = new CsrfTokenValidationStrategyImplementation();
