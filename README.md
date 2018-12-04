@@ -1,5 +1,3 @@
 # Csrf security component
 
-Kinda usable now :)
-
-Csrf component
+Not maintained anymore - See 2.0 Version
