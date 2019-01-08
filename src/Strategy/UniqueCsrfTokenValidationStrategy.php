@@ -52,7 +52,7 @@ class UniqueCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyIn
     public function onGeneration(): void
     {
         if($this->refresh)
-            $this->manager->invalidate();
+            $this->getManager()->invalidate();
     }
     
     /**
@@ -71,7 +71,7 @@ class UniqueCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyIn
     public function postSubmission(CsrfToken $token): void
     {
         if(!$this->refresh)
-            $this->manager->invalidate();
+            $this->getManager()->invalidate();
     }
     
 }

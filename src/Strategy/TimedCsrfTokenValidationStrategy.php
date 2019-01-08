@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace Ness\Component\Csrf\Strategy;
 
 use Ness\Component\Csrf\CsrfTokenManagerAwareInterface;
+use Ness\Component\Csrf\CsrfTokenManagerInterface;
 use Ness\Component\Csrf\Traits\CsrfTokenManagerAwareTrait;
 use Ness\Component\Csrf\CsrfToken;
 
@@ -51,7 +52,7 @@ class TimedCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyInt
      */
     public function onGeneration(): void
     {
-        $this->manager->invalidate();
+        $this->getManager()->invalidate();
     }
 
     /**
@@ -61,7 +62,7 @@ class TimedCsrfTokenValidationStrategy implements CsrfTokenValidationStrategyInt
     public function onSubmission(CsrfToken $token): void
     {
         if($token->generatedAt()->add($this->interval) < new \DateTime())          
-            $this->manager->invalidate();
+            $this->getManager()->invalidate();
     }
 
     /**

@@ -28,7 +28,18 @@ trait CsrfTokenManagerAwareTrait
      *
      * @var CsrfTokenManagerInterface
      */
-    protected $manager;
+    private $manager;
+    
+    /**
+     * Get the linked csrf token manager
+     *
+     * @return CsrfTokenManagerInterface
+     *   Linked csrf token manager
+     */
+    public function getManager(): CsrfTokenManagerInterface
+    {
+        return $this->manager;
+    }
     
     /**
      * Link the csrf token manager to the component
