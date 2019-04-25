@@ -76,10 +76,11 @@ $manager = new CsrfTokenManager($generator, $store, $strategy);
 // yhwh.php
 if($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
-        $manager->validate(new CsrfToken($_POST["csrf_token"] ?? null));
+        // an empty value is provided as csrf token if no "csrf_token" parameter is passed to the request
+        $manager->validate(new CsrfToken($_POST["csrf_token"] ?? "")); 
         update_world($_POST["whattodo_whattodo"]); 
         // nicely done !
-    } catch(InvalidCsrfTokenException|CsrfTokenNotFoundException|TypeError $e) {
+    } catch(InvalidCsrfTokenException|CsrfTokenNotFoundException $e) {
         // someone tried to modify the world ! bad
         die("Invalid Csrf Token");
     }
